@@ -259,19 +259,20 @@ function sinAc(s){return s.normalize("NFD").replace(/[\u0300-\u036f]/g,"")}
 
 var SID="10JZz_unbXlJvpryJ5r6QVktdlvIvRBhqOqWaa3SliGU";
 
-function getSheet(name,cb){
-    var url="https://docs.google.com/spreadsheets/d/"+SID+"/gviz/tq?tqx=out:csv&sheet="+encodeURIComponent(name);
-    console.log("GET:",name);
-    fetch(url).then(function(r){
-        if(!r.ok)throw new Error("HTTP "+r.status);
+function getSheet(name, cb) {
+    var url = "https://docs.google.com/spreadsheets/d/" + SID + "/gviz/tq?tqx=out:csv&sheet=" + encodeURIComponent(name);
+    console.log("GET:", name);
+    fetch(url).then(function(r) {
+        if (!r.ok) throw new Error("HTTP " + r.status);
         return r.text();
-    }).then(function(csv){
-        var p=Papa.parse(csv,{header:false,skipEmptyLines:true});
-        console.log(name,"OK:",p.data.length,"rows");
-        cb(null,p.data);
-    }).catch(function(e){
-        console.error(name,"ERR:",e.message);
-        cb(e,null);
+    }).then(function(csv) {
+        csv = csv.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+        var p = Papa.parse(csv, {header: false, skipEmptyLines: true});
+        console.log(name, "OK:", p.data.length, "rows");
+        cb(null, p.data);
+    }).catch(function(e) {
+        console.error(name, "ERR:", e.message);
+        cb(e, null);
     });
 }
 
