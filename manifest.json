@@ -1,6 +1,6 @@
 {
     "name": "DUAVA Operaciones",
-    "short_name": "DUAVA Ops",
+    "short_name": "Operaciones",
     "start_url": "./index.html",
     "display": "standalone",
     "background_color": "#E8E3DB",
