@@ -1,13 +1,13 @@
 {
     "name": "DUAVA Operaciones",
-    "short_name": "Operaciones",
+    "short_name": "D. Operaciones",
     "start_url": "./index.html",
     "display": "standalone",
     "background_color": "#E8E3DB",
     "theme_color": "#0C1E3A",
     "orientation": "portrait",
     "icons": [
-        {"src": "./icon-192.png","sizes": "192x192","type": "image/png"},
-        {"src": "./icon-512.png","sizes": "512x512","type": "image/png"}
+        {"src": "./icon-192.png", "sizes": "192x192", "type": "image/png"},
+        {"src": "./icon-512.png", "sizes": "512x512", "type": "image/png"}
     ]
 }
