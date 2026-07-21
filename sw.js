@@ -1,5 +1,5 @@
-var CACHE="duava-ops-v3";
+var CACHE="duava-ops-v5";
 var URLS=["./index.html","./manifest.json"];
 self.addEventListener("install",function(e){e.waitUntil(caches.open(CACHE).then(function(c){return c.addAll(URLS)}))});
-self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(names){return Promise.all(names.filter(function(n){return n!==CACHE}).map(function(n){return caches.delete(n)}))}))});
+self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(n){return Promise.all(n.filter(function(x){return x!==CACHE}).map(function(x){return caches.delete(x)}))}))});
 self.addEventListener("fetch",function(e){e.respondWith(caches.match(e.request).then(function(r){return r||fetch(e.request)}))});
