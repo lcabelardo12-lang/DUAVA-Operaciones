@@ -260,16 +260,35 @@ function sinAc(s){return s.normalize("NFD").replace(/[\u0300-\u036f]/g,"")}
 var SID="10JZz_unbXlJvpryJ5r6QVktdlvIvRBhqOqWaa3SliGU";
 
 function getSheet(name, cb) {
-    var url = "https://docs.google.com/spreadsheets/d/" + SID + "/gviz/tq?tqx=out:csv&sheet=" + encodeURIComponent(name);
+    var url = "https://docs.google.com/spreadsheets/d/" + SID + "/gviz/tq?sheet=" + encodeURIComponent(name);
     console.log("GET:", name);
     fetch(url).then(function(r) {
         if (!r.ok) throw new Error("HTTP " + r.status);
         return r.text();
-    }).then(function(csv) {
-        csv = csv.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-        var p = Papa.parse(csv, {header: false, skipEmptyLines: true});
-        console.log(name, "OK:", p.data.length, "rows");
-        cb(null, p.data);
+    }).then(function(text) {
+        var match = text.match(/google\.visualization\.Query\.setResponse$$([\s\S]*)$$;?\s*$/);
+        if (!match) throw new Error("Invalid response");
+        var json = JSON.parse(match[1]);
+        var rows = [];
+        if (json.table && json.table.rows) {
+            for (var i = 0; i < json.table.rows.length; i++) {
+                var row = json.table.rows[i];
+                var cells = [];
+                if (row.c) {
+                    for (var j = 0; j < row.c.length; j++) {
+                        var cell = row.c[j];
+                        cells.push(cell && cell.v != null ? String(cell.v) : "");
+                    }
+                }
+                var hasData = false;
+                for (var k = 0; k < cells.length; k++) {
+                    if (cells[k].trim() !== "") { hasData = true; break; }
+                }
+                if (hasData) rows.push(cells);
+            }
+        }
+        console.log(name, "OK:", rows.length, "rows");
+        cb(null, rows);
     }).catch(function(e) {
         console.error(name, "ERR:", e.message);
         cb(e, null);
@@ -293,7 +312,7 @@ function ld(k){try{return JSON.parse(localStorage.getItem("duava_"+k)||"[]")}cat
 function sv(k,d){localStorage.setItem("duava_"+k,JSON.stringify(d))}
 
 function loadVendedores(cb){
-    getSheet("Vendedores_ops",function(err,data){
+    getSheet("Vendedores",function(err,data){
         dbVend=[];
         if(!err&&data){
             console.log("Vend raw:",data.length);
