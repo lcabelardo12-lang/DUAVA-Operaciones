@@ -204,13 +204,50 @@ html,body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);mi
 <script>
 function hx(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
 function sA(s){return s.normalize("NFD").replace(/[\u0300-\u036f]/g,"")}
+
 var SID="10JZz_unbXlJvpryJ5r6QVktdlvIvRBhqOqWaa3SliGU";
+var GAS_URL="https://script.google.com/macros/s/AKfycbwEYXRnteFr_NF12L0GB3MHI00WK9qWI7lUBypVUkX7roAAnwJP_YsfUji5z8PI8XKO/exec";
 
 function gS(name,cb){
     var u="https://docs.google.com/spreadsheets/d/"+SID+"/gviz/tq?tqx=out:csv&sheet="+encodeURIComponent(name);
     fetch(u).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.text()})
     .then(function(c){var p=Papa.parse(c,{header:false,skipEmptyLines:true});console.log(name,p.data.length,"rows");cb(null,p.data)})
     .catch(function(e){console.error(name,e.message);cb(e,null)});
+}
+
+function postGAS(d){
+    if(!GAS_URL)return Promise.resolve({ok:false});
+    return fetch(GAS_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(d)})
+    .then(function(r){return r.json()}).catch(function(e){console.error("GAS:",e);return{ok:false}});
+}
+function getGAS(){
+    if(!GAS_URL)return Promise.resolve({ok:false,rows:[]});
+    return fetch(GAS_URL+"?action=getData").then(function(r){return r.json()})
+    .catch(function(e){console.error("GAS:",e);return{ok:false,rows:[]}});
+}
+function mergeGAS(){
+    getGAS().then(function(resp){
+        if(!resp.ok||!resp.rows||!resp.rows.length)return;
+        var gasO={};
+        resp.rows.forEach(function(r){
+            if(!gasO[r.OrdenID])gasO[r.OrdenID]={id:r.OrdenID,nombre:r.OrdenNombre,sucursal:r.Sucursal,estado:"enviada",fechaCreacion:r.FechaEnvio,fechaEnvio:r.FechaEnvio,notas:"",responsable:r.Vendedor};
+        });
+        for(var oid in gasO){var f=false;for(var i=0;i<ordenes.length;i++){if(ordenes[i].id===oid){f=true;break}}if(!f)ordenes.push(gasO[oid])}
+        sv("ordenes",ordenes);
+        resp.rows.forEach(function(r){
+            var f=false;
+            for(var i=0;i<pedidos.length;i++){if(pedidos[i].id===r.PedidoID){f=true;if(r.EstadoPedido==="entregado"&&pedidos[i].estado!=="entregado"){pedidos[i].estado="entregado";pedidos[i].fechaCambio=r.FechaEntrega}break}}
+            if(!f){var it=[];try{it=JSON.parse(r.Items)}catch(e){}pedidos.push({id:r.PedidoID,tipo:r.Tipo,cliente:r.Cliente,whatsapp:r.WhatsApp,items:it,estado:r.EstadoPedido,ordenId:r.OrdenID,responsable:r.Vendedor,observaciones:r.Observaciones||"",fechaCreacion:r.FechaEnvio,fechaCambio:r.FechaEntrega||r.FechaEnvio})}
+        });
+        sv("pedidos",pedidos);
+        resp.rows.forEach(function(r){
+            var sf=false;historial.forEach(function(h){if(h.tipo==="orden_enviada"&&h.refId===r.OrdenID)sf=true});
+            if(!sf)historial.unshift({fecha:r.FechaEnvio,tipo:"orden_enviada",refId:r.OrdenID,cliente:"",whatsapp:"",producto:r.OrdenNombre,tono:"",cantidad:0,total:0,sucursal:r.Sucursal,responsable:r.Vendedor});
+            if(r.EstadoPedido==="entregado"){var df=false;historial.forEach(function(h){if(h.tipo==="pedido_entregado"&&h.refId===r.PedidoID)df=true});if(!df)historial.unshift({fecha:r.FechaEntrega,tipo:"pedido_entregado",refId:r.PedidoID,cliente:r.Cliente,whatsapp:r.WhatsApp,producto:r.OrdenNombre,tono:"",cantidad:0,total:r.TotalUSD,sucursal:r.Sucursal,responsable:r.Vendedor})}
+        });
+        sv("hist",historial);
+        dAl();doSm();rPe();rO();rH();
+    });
 }
 
 var dP={};var dV=[];var dS=[];
@@ -260,7 +297,7 @@ function doLg(){
     var v=dV.find(function(x){return x.nombre===n});
     if(v&&v.clave===c){
         vA=n;document.getElementById("LS").style.display="none";document.getElementById("DS").style.display="block";document.getElementById("tI").textContent="Hola, "+n;
-        pedidos=ld("pedidos");ordenes=ld("ordenes");historial=ld("hist");ldC();ldS();dAl();doSm();rPe();
+        pedidos=ld("pedidos");ordenes=ld("ordenes");historial=ld("hist");ldC();ldS();dAl();doSm();rPe();mergeGAS();
     }else shE("Clave incorrecta");
 }
 function shE(m){var e=document.getElementById("lEr");e.textContent=m;e.classList.add("show");document.querySelector(".lc").classList.add("shake");setTimeout(function(){e.classList.remove("show");document.querySelector(".lc").classList.remove("shake")},1500)}
@@ -396,7 +433,6 @@ function eI(i){
 }
 
 function rI(i){if(eII===i)cI();else if(eII>i)eII--;eIts.splice(i,1);rIts()}
-
 function cI(){eII=-1;rAF();document.getElementById("bA").textContent="Agregar al Pedido";document.getElementById("bC").style.display="none";document.getElementById("aT").textContent="Agregar Producto"}
 
 function rAF(){if(!eM){document.getElementById("pP").value="";document.getElementById("pT").innerHTML='<option value="">Seleccionar producto primero</option>'}else{document.getElementById("pPM").value="";document.getElementById("pTM").value=""}document.getElementById("pCa").value="1";document.getElementById("pCo").value="";document.getElementById("pPr").value=""}
@@ -427,7 +463,11 @@ function dP2(id){if(!confirm("¿Eliminar?"))return;pedidos=pedidos.filter(functi
 
 function cE2(id,est){
     var p=pedidos.find(function(x){return x.id===id});if(!p)return;p.estado=est;p.fechaCambio=new Date().toISOString().split("T")[0];sv("pedidos",pedidos);
-    if(est==="entregado"){var su="—";if(p.ordenId){var o=ordenes.find(function(x){return x.id===p.ordenId});if(o)su=o.sucursal}var its=gI(p);var tot=pTl(p);var nm=its.map(function(i){return i.producto+(i.tono&&i.tono!=="Sin tono"?" — "+i.tono:"")+" ×"+i.cantidad}).join(", ");historial.unshift({fecha:p.fechaCambio,tipo:p.tipo==="stock"?"stock_tienda":"pedido_entregado",refId:id,cliente:p.cliente,whatsapp:p.whatsapp,producto:nm,tono:"",cantidad:its.length,total:tot,sucursal:su,responsable:p.responsable});sv("hist",historial)}
+    if(est==="entregado"){
+        var su="—";if(p.ordenId){var o=ordenes.find(function(x){return x.id===p.ordenId});if(o)su=o.sucursal}var its=gI(p);var tot=pTl(p);var nm=its.map(function(i){return i.producto+(i.tono&&i.tono!=="Sin tono"?" — "+i.tono:"")+" ×"+i.cantidad}).join(", ");
+        historial.unshift({fecha:p.fechaCambio,tipo:p.tipo==="stock"?"stock_tienda":"pedido_entregado",refId:id,cliente:p.cliente,whatsapp:p.whatsapp,producto:nm,tono:"",cantidad:its.length,total:tot,sucursal:su,responsable:p.responsable});sv("hist",historial);
+        postGAS({action:"updatePedido",pedidoId:id,estado:"entregado",fechaEntrega:new Date().toISOString().split("T")[0]});
+    }
     dAl();doSm();rPe();
 }
 
@@ -480,6 +520,8 @@ function sFz(oid){
     items.forEach(function(p){if(p.estado==="nuevo"){p.estado="comprado";p.fechaCambio=o.fechaEnvio}});
     historial.unshift({fecha:o.fechaEnvio,tipo:"orden_enviada",refId:oid,cliente:"",whatsapp:"",producto:o.nombre,tono:"",cantidad:items.length,total:0,sucursal:o.sucursal,responsable:vA||""});
     sv("ordenes",ordenes);sv("pedidos",pedidos);sv("hist",historial);
+    var gr=[];items.forEach(function(p){gr.push({OrdenID:oid,OrdenNombre:o.nombre,Sucursal:o.sucursal,FechaEnvio:o.fechaEnvio,Vendedor:vA||"",PedidoID:p.id,Tipo:p.tipo,Cliente:p.cliente||"",WhatsApp:p.whatsapp||"",Items:JSON.stringify(gI(p)),TotalUSD:pTl(p),EstadoPedido:"comprado",FechaEntrega:"",Observaciones:p.observaciones||""})});
+    postGAS({action:"saveOrder",rows:gr});
     alert("Enviada. "+items.length+" pedido(s) a 'Comprado'.");cOE();rO();
 }
 
