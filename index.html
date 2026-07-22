@@ -293,7 +293,7 @@ function ld(k){try{return JSON.parse(localStorage.getItem("duava_"+k)||"[]")}cat
 function sv(k,d){localStorage.setItem("duava_"+k,JSON.stringify(d))}
 
 function loadVendedores(cb){
-    getSheet("Vendedores",function(err,data){
+    getSheet("Vendedores_ops",function(err,data){
         dbVend=[];
         if(!err&&data){
             console.log("Vend raw:",data.length);
