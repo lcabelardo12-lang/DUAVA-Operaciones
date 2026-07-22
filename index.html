@@ -259,45 +259,53 @@ function sinAc(s){return s.normalize("NFD").replace(/[\u0300-\u036f]/g,"")}
 
 var SID="10JZz_unbXlJvpryJ5r6QVktdlvIvRBhqOqWaa3SliGU";
 
-function getSheet(name, cb) {
-    var url = "https://docs.google.com/spreadsheets/d/" + SID + "/gviz/tq?tqx=out:csv&sheet=" + encodeURIComponent(name);
-    console.log("GET:", name);
-    fetch(url).then(function(r) {
-        if (!r.ok) throw new Error("HTTP " + r.status);
+function getSheet(name,cb){
+    var url="https://docs.google.com/spreadsheets/d/"+SID+"/gviz/tq?tqx=out:csv&sheet="+encodeURIComponent(name);
+    console.log("GET:",name);
+    fetch(url).then(function(r){
+        if(!r.ok)throw new Error("HTTP "+r.status);
         return r.text();
-    }).then(function(csv) {
-        csv = csv.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
-        var lines = csv.split("\n");
-        var rows = [];
-        for (var i = 0; i < lines.length; i++) {
-            var line = lines[i].trim();
-            if (!line) continue;
-            var cells = [];
-            var inQuote = false;
-            var cell = "";
-            for (var j = 0; j < line.length; j++) {
-                var ch = line[j];
-                if (ch === '"') {
-                    inQuote = !inQuote;
-                } else if (ch === "," && !inQuote) {
-                    cells.push(cell.trim());
-                    cell = "";
-                } else {
-                    cell += ch;
+    }).then(function(csv){
+        var p=Papa.parse(csv,{header:false,skipEmptyLines:true});
+        console.log(name,"OK:",p.data.length,"rows");
+        cb(null,p.data);
+    }).catch(function(e){
+        console.error(name,"ERR:",e.message);
+        cb(e,null);
+    });
+}
+function getSheetSimple(name,cb){
+    var url="https://docs.google.com/spreadsheets/d/"+SID+"/gviz/tq?sheet="+encodeURIComponent(name);
+    console.log("GET_JSON:",name);
+    fetch(url).then(function(r){
+        if(!r.ok)throw new Error("HTTP "+r.status);
+        return r.text();
+    }).then(function(text){
+        var s=text.indexOf("{");
+        var e=text.lastIndexOf("}");
+        if(s<0||e<0)throw new Error("No JSON");
+        var j=JSON.parse(text.substring(s,e+1));
+        var rows=[];
+        if(j.table&&j.table.rows){
+            for(var i=0;i<j.table.rows.length;i++){
+                var row=j.table.rows[i];
+                var cells=[];
+                if(row.c){
+                    for(var k=0;k<row.c.length;k++){
+                        var c=row.c[k];
+                        cells.push(c&&c.v!=null?String(c.v):"");
+                    }
                 }
+                var ok=false;
+                for(var m=0;m<cells.length;m++){if(cells[m].trim()!==""){ok=true;break}}
+                if(ok)rows.push(cells);
             }
-            cells.push(cell.trim());
-            var ok = false;
-            for (var k = 0; k < cells.length; k++) {
-                if (cells[k] !== "") { ok = true; break; }
-            }
-            if (ok) rows.push(cells);
         }
-        console.log(name, "rows:", rows.length);
-        cb(null, rows);
-    }).catch(function(e) {
-        console.error(name, "ERR:", e.message);
-        cb(e, null);
+        console.log(name,"OK:",rows.length,"rows");
+        cb(null,rows);
+    }).catch(function(e){
+        console.error(name,"ERR:",e.message);
+        cb(e,null);
     });
 }
 
@@ -318,7 +326,7 @@ function ld(k){try{return JSON.parse(localStorage.getItem("duava_"+k)||"[]")}cat
 function sv(k,d){localStorage.setItem("duava_"+k,JSON.stringify(d))}
 
 function loadVendedores(cb){
-    getSheet("Vendedores",function(err,data){
+    getSheetSimple("Vendedores",function(err,data){
         dbVend=[];
         if(!err&&data){
             console.log("Vend raw:",data.length);
@@ -373,7 +381,7 @@ function loadCatalogo(){
 }
 
 function loadSucursales(){
-    getSheet("Sucursales",function(err,data){
+    getSheetSimple("Sucursales",function(err,data){
         dbSuc=[];
         if(!err&&data){
             console.log("Suc raw:",data.length);
