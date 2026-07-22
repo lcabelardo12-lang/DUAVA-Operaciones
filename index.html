@@ -302,7 +302,7 @@ function rPe(){
     var h="";f.forEach(function(p){
         var its=gI(p);var tot=pTl(p);var lb=p.estado.charAt(0).toUpperCase()+p.estado.slice(1);
         h+='<div class="pc"><div class="pch"><div>';
-        for(var j=0;j<its.length;j++){h+='<div class="pct">'+hx(its[j].producto);if(its[j].tono&&its[j].tono!=="Sin tono")h+=" — "+hx(its[j].tono);h+=" ×"+its[j].cantidad+" · $"+its[j].precio.toFixed(2)+" c/u</div>"}
+        h+='<div class="pct">'+its.length+' producto(s)</div>';
         if(p.tipo==="pedido")h+='<div class="pcm">'+hx(p.cliente)+" · WA: "+hx(p.whatsapp)+'</div>';else h+='<div class="pcm">Stock para tienda</div>';
         h+='<div class="pcm">Total: $'+tot.toFixed(2)+" · Vendedor: "+hx(p.responsable)+'</div>';
         if(p.ordenId){var o=ordenes.find(function(x){return x.id===p.ordenId});if(o)h+='<div class="pcm">Orden: '+hx(o.nombre)+'</div>'}
