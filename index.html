@@ -292,11 +292,27 @@ function ldC(){
 }
 
 function ldCP(){
-    gS2("Equipos",PRISMA_SID,function(e,d){
-        dE={};
-        if(!e&&d){for(var i=0;i<d.length;i++){var r=d[i];var titulo=(r[4]||"").trim();if(!titulo)continue;var nl=sA(titulo).toLowerCase();if(nl==="titulo"||nl==="título")continue;var marca=(r[2]||"").trim();var modelo=(r[3]||"").trim();var precio=parseFloat(String(r[5]||"0").replace(/[^0-9.]/g,""))||0;if(!dE[titulo])dE[titulo]={marca:marca,entries:[]};var variation=modelo||"—";var dup=false;for(var j=0;j<dE[titulo].entries.length;j++){if(dE[titulo].entries[j].tono===variation){dup=true;break}}if(!dup)dE[titulo].entries.push({tono:variation,precio:precio})}}
+    var u="https://docs.google.com/spreadsheets/d/"+PRISMA_SID+"/gviz/tq?tqx=out:json&sheet=Equipos";
+    fetch(u).then(function(r){return r.text()}).then(function(text){
+        var si=text.indexOf('(');var ei=text.lastIndexOf(')');
+        var jsonStr=(si>=0&&ei>si)?text.substring(si+1,ei):text;
+        var data=JSON.parse(jsonStr);dE={};
+        if(data&&data.table&&data.table.rows){
+            for(var i=0;i<data.table.rows.length;i++){
+                var cells=data.table.rows[i].c;if(!cells)continue;
+                var titulo=cells[4]&&cells[4].v!=null?String(cells[4].v).trim():"";
+                if(!titulo)continue;var nl=sA(titulo).toLowerCase();if(nl==="titulo"||nl==="título")continue;
+                var marca=cells[2]&&cells[2].v!=null?String(cells[2].v).trim():"";
+                var modelo=cells[3]&&cells[3].v!=null?String(cells[3].v).trim():"";
+                var precio=parseFloat(String((cells[5]&&cells[5].v!=null?cells[5].v:0)).replace(/[^0-9.]/g,""))||0;
+                if(!dE[titulo])dE[titulo]={marca:marca,entries:[]};
+                var variation=modelo||"—";var dup=false;
+                for(var j=0;j<dE[titulo].entries.length;j++){if(dE[titulo].entries[j].tono===variation){dup=true;break}}
+                if(!dup)dE[titulo].entries.push({tono:variation,precio:precio})
+            }
+        }
         console.log("TP:",Object.keys(dE).length,"equipos");
-    });
+    }).catch(function(e){console.error("TP err:",e);dE={}})
 }
 
 function ldS(){
