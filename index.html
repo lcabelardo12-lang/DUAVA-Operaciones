@@ -292,23 +292,15 @@ function ldC(){
 }
 
 function ldCP(){
-    var u="https://docs.google.com/spreadsheets/d/"+PRISMA_SID+"/gviz/tq?tqx=out:json&sheet=Equipos&tq=select C,D,E,F";
-    fetch(u).then(function(r){return r.text()}).then(function(text){
-        var si=text.indexOf('(');var ei=text.lastIndexOf(')');
-        var jsonStr=(si>=0&&ei>si)?text.substring(si+1,ei):text;
-        var data=JSON.parse(jsonStr);dE={};
-        if(data&&data.table&&data.table.rows){
-            for(var i=0;i<data.table.rows.length;i++){
-                var cells=data.table.rows[i].c;if(!cells)continue;
-                var marca=cells[0]&&cells[0].v!=null?String(cells[0].v).trim():"";
-                var modelo=cells[1]&&cells[1].v!=null?String(cells[1].v).trim():"";
-                var titulo=cells[2]&&cells[2].v!=null?String(cells[2].v).trim():"";
-                var precio=parseFloat(String((cells[3]&&cells[3].v!=null?cells[3].v:0)).replace(/[^0-9.]/g,""))||0;
-                if(!titulo)continue;var nl=sA(titulo).toLowerCase();if(nl==="titulo"||nl==="título")continue;
-                if(!dE[titulo])dE[titulo]={marca:marca,entries:[]};
-                var variation=modelo||"—";var dup=false;
+    fetch(GAS_URL+"?action=getEquipos").then(function(r){return r.json()}).then(function(resp){
+        dE={};
+        if(resp.ok&&resp.equipos){
+            for(var i=0;i<resp.equipos.length;i++){
+                var eq=resp.equipos[i];var titulo=eq.titulo;if(!titulo)continue;
+                if(!dE[titulo])dE[titulo]={marca:eq.marca,entries:[]};
+                var variation=eq.modelo||"—";var dup=false;
                 for(var j=0;j<dE[titulo].entries.length;j++){if(dE[titulo].entries[j].tono===variation){dup=true;break}}
-                if(!dup)dE[titulo].entries.push({tono:variation,precio:precio})
+                if(!dup)dE[titulo].entries.push({tono:variation,precio:eq.precio})
             }
         }
         console.log("TP:",Object.keys(dE).length,"equipos");
