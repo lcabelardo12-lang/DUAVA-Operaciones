@@ -522,7 +522,7 @@ function rO(){
     h+='<div class="oc"><div class="och"><div><div class="oct">'+hx(o.nombre)+'</div><div class="ocs">Sucursal: '+hx(o.sucursal)+" · Vendedor: "+hx(o.responsable||"")+'</div><div class="oci">'+items.length+" pedido(s) · "+o.fechaCreacion+'</div>';if(o.fechaEnvio)h+='<div class="oci">Enviada: '+o.fechaEnvio+'</div>';
     h+='</div><span class="bd '+bg+'">'+lb+'</span></div>';
     if(items.length){h+='<div style="margin-top:8px;font-size:.8rem">';items.forEach(function(p){gI(p).forEach(function(i){h+='<div style="padding:3px 0;border-bottom:1px solid #F1F5F9">'+hx(i.producto);if(i.tono&&i.tono!=="Sin tono")h+=" — "+hx(i.tono);h+=" ×"+i.cantidad+(p.tipo==="pedido"?" — "+hx(p.cliente):" — Stock")+'</div>'})});h+='</div>'}
-    h+='<div class="oa">';if(o.estado==="pendiente")h+='<button class="ae" onclick="eO(\''+o.id+'\')">Editar</button><button class="as" onclick="sFz(\''+o.id+'\')">Enviar</button><button class="ad" onclick="dO(\''+o.id+'\')">Eliminar</button>';h+='</div></div>'});el.innerHTML=h;
+    h+='<div class="oa">';h+='<button class="aw" onclick="sWO(\''+o.id+'\')">WhatsApp</button>';if(o.estado==="pendiente")h+='<button class="ae" onclick="eO(\''+o.id+'\')">Editar</button><button class="as" onclick="sFz(\''+o.id+'\')">Enviar</button><button class="ad" onclick="dO(\''+o.id+'\')">Eliminar</button>';h+='</div></div>'});el.innerHTML=h;
 }
 
 function nO(){eOI=null;document.getElementById("oET").textContent="Nueva Orden";document.getElementById("rO").textContent="Vendedor: "+(vA||"—");document.getElementById("oNm").value="";document.getElementById("oSu").value="";document.getElementById("oNt").value="";document.getElementById("bFz").style.display="none";rOC();document.getElementById("oLV").style.display="none";document.getElementById("oEV").style.display="block"}
@@ -574,6 +574,31 @@ function sFz(oid){
     postGAS({action:"saveOrden",row:ordToGAS(o)});
     items.forEach(function(p){postGAS({action:"savePedido",row:pedToGAS(p)})});
     alert("Enviada. "+items.length+" pedido(s) a 'Comprado'.");cOE();rO();
+}
+
+function sWO(oid){
+    var o=ordenes.find(function(x){return x.id===oid});if(!o)return;
+    var items=pedidos.filter(function(p){return p.ordenId===oid});
+    var tot=0;var pc=0;
+    var msg="📋 *DUAVA Operaciones — Orden de Compra*\n\n";
+    msg+="📦 Orden: "+o.nombre+"\n";
+    msg+="🏪 Sucursal: "+o.sucursal+"\n";
+    if(o.responsable)msg+="👤 Vendedor: "+o.responsable+"\n";
+    msg+="\n🛒 *Productos:*\n";
+    items.forEach(function(p){
+        gI(p).forEach(function(i){
+            var sub=i.cantidad*i.precio;tot+=sub;pc++;
+            msg+="• "+i.producto;
+            if(i.tono&&i.tono!=="Sin tono")msg+=" — "+i.tono;
+            msg+=" × "+i.cantidad;
+            if(i.precio)msg+=" — $"+i.precio.toFixed(2)+" c/u";
+            msg+="\n";
+        });
+    });
+    msg+="\n💰 *Total: $"+tot.toFixed(2)+"*\n";
+    msg+="📦 "+items.length+" pedido(s) · "+pc+" producto(s)\n";
+    if(o.notas)msg+="\n📝 Notas: "+o.notas+"\n";
+    window.open("https://wa.me/?text="+encodeURIComponent(msg),"_blank");
 }
 
 function dO(id){if(!confirm("¿Eliminar?"))return;pedidos.forEach(function(p){if(p.ordenId===id)p.ordenId=null});ordenes=ordenes.filter(function(o){return o.id!==id});sv("ordenes",ordenes);sv("pedidos",pedidos);postGAS({action:"deleteOrden",ordenId:id});pedidos.forEach(function(p){if(!p.ordenId)postGAS({action:"savePedido",row:pedToGAS(p)})});rO()}
