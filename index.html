@@ -106,8 +106,8 @@ html,body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);mi
 <div class="sw2"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" class="si2" id="iQ" placeholder="Buscar..." oninput="rPe()"></div>
 <div id="aB"></div>
 <div class="fb" id="fB">
-<button class="fbn on" onclick="sF('todos',this)">Todos</button>
-<button class="fbn" onclick="sF('nuevo',this)">Nuevos</button>
+<button class="fbn" onclick="sF('todos',this)">Todos</button>
+<button class="fbn on" onclick="sF('nuevo',this)">Nuevos</button>
 <button class="fbn" onclick="sF('comprado',this)">Comprados</button>
 <button class="fbn" onclick="sF('enviado',this)">Enviados</button>
 <button class="fbn" onclick="sF('entregado',this)">Entregados</button>
@@ -167,7 +167,7 @@ html,body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);mi
 
 <div id="tab2" class="tc">
 <div id="oLV">
-<div class="cd"><h2 class="pt">Órdenes de Compra</h2><p class="pd">Agrupa pedidos para enviar a Finanzas.</p><div id="oL"></div><button class="btn" onclick="nO()" style="margin-top:16px">+ Nueva Orden</button></div>
+<div class="cd"><h2 class="pt">Órdenes de Compra</h2><p class="pd">Agrupa pedidos para enviar a Finanzas.</p><div class="fb" id="ofB"><button class="fbn on" onclick="sOF('todos',this)">Todos</button><button class="fbn" onclick="sOF('pendiente',this)">Pendientes</button><button class="fbn" onclick="sOF('enviada',this)">Enviadas</button></div><div id="oL"></div><button class="btn" onclick="nO()" style="margin-top:16px">+ Nueva Orden</button></div>
 </div>
 <div id="oEV" style="display:none">
 <div class="cd">
@@ -242,18 +242,19 @@ function mergeGAS(){
     getGAS().then(function(resp){
         if(!resp.ok)return;
         if(resp.pedidos&&resp.pedidos.length){
+            pedidos=[];
             resp.pedidos.forEach(function(rp){
-                var f=false;
-                for(var i=0;i<pedidos.length;i++){if(pedidos[i].id===rp.ID){f=true;pedidos[i].tipo=rp.Tipo;pedidos[i].cliente=rp.Cliente;pedidos[i].whatsapp=rp.WhatsApp;try{pedidos[i].items=JSON.parse(rp.Items)}catch(e){}pedidos[i].estado=rp.Estado;pedidos[i].ordenId=rp.OrdenID||null;pedidos[i].responsable=rp.Responsable;pedidos[i].observaciones=rp.Observaciones;pedidos[i].fechaCreacion=rp.FechaCreacion;pedidos[i].fechaCambio=rp.FechaCambio;break}}
-                if(!f){var items=[];try{items=JSON.parse(rp.Items)}catch(e){}pedidos.push({id:rp.ID,tipo:rp.Tipo,cliente:rp.Cliente,whatsapp:rp.WhatsApp,items:items,estado:rp.Estado,ordenId:rp.OrdenID||null,responsable:rp.Responsable,observaciones:rp.Observaciones,fechaCreacion:rp.FechaCreacion,fechaCambio:rp.FechaCambio})}
-            });sv("pedidos",pedidos);
+                var items=[];try{items=JSON.parse(rp.Items)}catch(e){}
+                pedidos.push({id:rp.ID,tipo:rp.Tipo,cliente:rp.Cliente,whatsapp:rp.WhatsApp,items:items,estado:rp.Estado,ordenId:rp.OrdenID||null,responsable:rp.Responsable,observaciones:rp.Observaciones,fechaCreacion:rp.FechaCreacion,fechaCambio:rp.FechaCambio});
+            });
+            sv("pedidos",pedidos);
         }
         if(resp.ordenes&&resp.ordenes.length){
+            ordenes=[];
             resp.ordenes.forEach(function(ro){
-                var f=false;
-                for(var i=0;i<ordenes.length;i++){if(ordenes[i].id===ro.ID){f=true;ordenes[i].nombre=ro.Nombre;ordenes[i].sucursal=ro.Sucursal;ordenes[i].estado=ro.Estado;ordenes[i].fechaCreacion=ro.FechaCreacion;ordenes[i].fechaEnvio=ro.FechaEnvio||null;ordenes[i].notas=ro.Notas;ordenes[i].responsable=ro.Responsable;break}}
-                if(!f)ordenes.push({id:ro.ID,nombre:ro.Nombre,sucursal:ro.Sucursal,estado:ro.Estado,fechaCreacion:ro.FechaCreacion,fechaEnvio:ro.FechaEnvio||null,notas:ro.Notas,responsable:ro.Responsable})
-            });sv("ordenes",ordenes);
+                ordenes.push({id:ro.ID,nombre:ro.Nombre,sucursal:ro.Sucursal,estado:ro.Estado,fechaCreacion:ro.FechaCreacion,fechaEnvio:ro.FechaEnvio||null,notas:ro.Notas,responsable:ro.Responsable});
+            });
+            sv("ordenes",ordenes);
         }
         dAl();doSm();rPe();rO();rH();
     });
@@ -262,7 +263,7 @@ function mergeGAS(){
 var dP={};var dE={};var dV=[];var dS=[];
 var pedidos=[];var ordenes=[];var historial=[];
 var vA=null;var ePI=null;var eOI=null;
-var tA="pedido";var fA="todos";var eM=false;var curStore="dts";
+var tA="pedido";var fA="nuevo";var eM=false;var curStore="dts";
 var eIts=[];var eII=-1;
 
 function ld(k){try{return JSON.parse(localStorage.getItem("do_"+k)||"[]")}catch(e){return[]}}
