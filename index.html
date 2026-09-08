@@ -508,11 +508,14 @@ function sPd(){
 function dP2(id){if(!confirm("¿Eliminar?"))return;pedidos=pedidos.filter(function(p){return p.id!==id});sv("pedidos",pedidos);postGAS({action:"deletePedido",pedidoId:id});doSm();rPe()}
 
 function cE2(id,est){
-    var p=pedidos.find(function(x){return x.id===id});if(!p)return;p.estado=est;p.fechaCambio=new Date().toISOString().split("T")[0];sv("pedidos",pedidos);postGAS({action:"savePedido",row:pedToGAS(p)});
+    var p=pedidos.find(function(x){return x.id===id});if(!p)return;
+    var porcVendedor=0;
+    if(est==="entregado"){var input=prompt("% del vendedor para esta venta (ej: 10):","0");if(input===null)return;porcVendedor=parseFloat(input)||0}
+    p.estado=est;p.fechaCambio=new Date().toISOString().split("T")[0];sv("pedidos",pedidos);postGAS({action:"savePedido",row:pedToGAS(p)});
     if(est==="entregado"){
         var su="—";if(p.ordenId){var o=ordenes.find(function(x){return x.id===p.ordenId});if(o)su=o.sucursal}var its=gI(p);var tot=pTl(p);var nm=its.map(function(i){return i.producto+(i.tono&&i.tono!=="Sin tono"?" — "+i.tono:"")+" ×"+i.cantidad}).join(", ");
         historial.unshift({fecha:p.fechaCambio,tipo:p.tipo==="stock"?"stock_tienda":"pedido_entregado",refId:id,cliente:p.cliente,whatsapp:p.whatsapp,producto:nm,tono:"",cantidad:its.length,total:tot,sucursal:su,responsable:p.responsable});sv("hist",historial);
-        postGAS({action:"updatePedido",pedidoId:id,estado:"entregado",fechaEntrega:new Date().toISOString().split("T")[0]});
+        postGAS({action:"entregarPedido",pedidoId:id,porcVendedor:porcVendedor,items:gI(p),cliente:p.cliente||"",whatsapp:p.whatsapp||"",vendedor:p.responsable||vA||""});
     }
     dAl();doSm();rPe();
 }
