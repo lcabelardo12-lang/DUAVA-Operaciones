@@ -269,6 +269,15 @@ function mergeGAS(){
             });
             sv("ordenes",ordenes);
         }
+        var validIds={};
+        ordenes.forEach(function(o){validIds[o.id]=true});
+        var changed=false;
+        pedidos.forEach(function(p){
+            if(p.ordenId&&String(p.ordenId).indexOf("tmp_")!==0&&!validIds[p.ordenId]){
+                p.ordenId=null;changed=true;
+            }
+        });
+        if(changed)sv("pedidos",pedidos);
         dAl();doSm();rPe();rO();rH();
     });
 }
@@ -393,6 +402,14 @@ function rPe(){
 }
 
 function sF(f,btn){fA=f;document.querySelectorAll("#fB .fbn").forEach(function(b){b.classList.remove("on")});if(btn)btn.classList.add("on");rPe()}
+
+var fAO="todos";
+function sOF(f,btn){
+    fAO=f;
+    document.querySelectorAll("#ofB .fbn").forEach(function(b){b.classList.remove("on")});
+    if(btn)btn.classList.add("on");
+    rO();
+}
 
 function swStore(s){curStore=s;document.getElementById("stDTS").classList.toggle("on",s==="dts");document.getElementById("stTP").classList.toggle("on",s==="tp");updPD()}
 
@@ -538,7 +555,10 @@ function cE2(id,est){
 
 function rO(){
     var el=document.getElementById("oL");if(!ordenes.length){el.innerHTML='<div class="xt">No hay órdenes.</div>';return}
-    var h="";ordenes.forEach(function(o){var items=pedidos.filter(function(p){return p.ordenId===o.id});var bg=o.estado==="pendiente"?"bp":"bv";var lb=o.estado==="pendiente"?"Pendiente":"Enviada";
+    var fo=ordenes;
+    if(fAO!=="todos")fo=ordenes.filter(function(o){return o.estado===fAO});
+    if(!fo.length){el.innerHTML='<div class="xt">No hay órdenes en este estado.</div>';return}
+    var h="";fo.forEach(function(o){var items=pedidos.filter(function(p){return p.ordenId===o.id});var bg=o.estado==="pendiente"?"bp":"bv";var lb=o.estado==="pendiente"?"Pendiente":"Enviada";
     h+='<div class="oc"><div class="och"><div><div class="oct">'+hx(o.nombre)+'</div><div class="ocs">Sucursal: '+hx(o.sucursal)+" · Vendedor: "+hx(o.responsable||"")+'</div><div class="oci">'+items.length+" pedido(s) · "+o.fechaCreacion+'</div>';if(o.fechaEnvio)h+='<div class="oci">Enviada: '+o.fechaEnvio+'</div>';
     h+='</div><span class="bd '+bg+'">'+lb+'</span></div>';
     if(items.length){h+='<div style="margin-top:8px;font-size:.8rem">';items.forEach(function(p){gI(p).forEach(function(i){h+='<div style="padding:3px 0;border-bottom:1px solid #F1F5F9">'+hx(i.producto);if(i.tono&&i.tono!=="Sin tono")h+=" — "+hx(i.tono);h+=" ×"+i.cantidad+(p.tipo==="pedido"?" — "+hx(p.cliente):" — Stock")+'</div>'})});h+='</div>'}
