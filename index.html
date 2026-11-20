@@ -43,11 +43,20 @@ html,body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);mi
 .bn{background:#DCFCE7;color:#166534}.bc{background:#FEF9C3;color:#854D0E}.be{background:#DBEAFE;color:#1E40AF}.bt{background:#D1FAE5;color:#065F46}.bp{background:#FEF3C7;color:#92400E}.bv{background:#D1FAE5;color:#065F46}
 .pc{background:var(--cw);border:1px solid #E2E8F0;border-radius:12px;padding:16px;margin-bottom:12px}
 .pch{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}.pct{font-size:.95rem;font-weight:700}.pcm{font-size:.8rem;color:var(--t2);margin-top:4px}
-.pca{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid #F1F5F9}.pca button{padding:8px 12px;border-radius:8px;border:none;font-size:.75rem;font-weight:600;cursor:pointer}
-.ae{background:#F1F5F9;color:var(--tx)}.aw{background:#25D366;color:#fff}.ad{background:#FEF2F2;color:#991B1B}.as{background:var(--pr);color:#fff}
-.oc{background:var(--cw);border:1px solid #E2E8F0;border-radius:12px;padding:16px;margin-bottom:12px}
-.och{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}.oct{font-size:.95rem;font-weight:700}.ocs{font-size:.8rem;color:var(--t2);margin-top:2px}.oci{font-size:.8rem;color:var(--t2);margin-top:4px}
-.oa{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid #F1F5F9}
+
+/* ===== BOTONES DE ACCIÓN ===== */
+.pca{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid #F1F5F9}
+.pca button{padding:10px 18px;border-radius:10px;border:none;font-size:.82rem;font-weight:700;cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif;display:inline-flex;align-items:center;gap:5px}
+.pca button:active{transform:scale(.96)}
+.ae{background:#F1F5F9;color:#334155;border:1.5px solid #E2E8F0}.ae:hover{background:#E2E8F0}
+.aw{background:#25D366;color:#fff;box-shadow:0 2px 8px rgba(37,211,102,.3)}.aw:hover{background:#1DA851}
+.ad{background:#FEF2F2;color:#DC2626;border:1.5px solid #FECACA}.ad:hover{background:#FEE2E2}
+.as{background:var(--pr);color:#fff;box-shadow:0 2px 8px rgba(12,30,58,.2)}.as:hover{background:#162D50}
+
+.oa{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid #F1F5F9}
+.oa button{padding:10px 18px;border-radius:10px;border:none;font-size:.82rem;font-weight:700;cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif;display:inline-flex;align-items:center;gap:5px}
+.oa button:active{transform:scale(.96)}
+
 .fb{display:flex;gap:8px;overflow-x:auto;padding-bottom:12px;margin-bottom:16px;scrollbar-width:none}.fb::-webkit-scrollbar{display:none}
 .fbn{flex-shrink:0;padding:8px 14px;border-radius:20px;border:1px solid #E2E8F0;background:#fff;font-size:.75rem;font-weight:600;cursor:pointer;white-space:nowrap}.fbn.on{background:var(--pr);color:#fff;border-color:var(--pr)}
 .al{background:#FEF2F2;border-left:4px solid var(--er);padding:14px 16px;border-radius:8px;margin-bottom:16px;font-size:.85rem;color:#991B1B;font-weight:600}
@@ -68,9 +77,12 @@ html,body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);mi
 .it{background:var(--cw);border:1px solid #E2E8F0;border-radius:8px;padding:10px 12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:flex-start}
 .itx{border-color:var(--pr);background:#F0F4FF}
 .itn{font-size:.85rem;flex:1;min-width:0}.ita{display:flex;gap:4px;flex-shrink:0;margin-left:8px}
-.ita button{padding:6px 10px;border-radius:6px;border:none;font-size:.7rem;font-weight:600;cursor:pointer}
-.ie{background:#F1F5F9;color:var(--tx)}.id{background:#FEF2F2;color:#991B1B}
-@media(max-width:600px){.lt{font-size:1.8rem}.cd{padding:20px 16px}.sn{font-size:1.5rem}.si{padding:12px 6px}}
+.ita button{padding:8px 14px;border-radius:8px;border:none;font-size:.75rem;font-weight:700;cursor:pointer;transition:all .15s}
+.ie{background:#F1F5F9;color:#334155;border:1.5px solid #E2E8F0}.ie:hover{background:#E2E8F0}
+.id{background:#FEF2F2;color:#DC2626;border:1.5px solid #FECACA}.id:hover{background:#FEE2E2}
+.hi{background:#fff;border:1px solid #E2E8F0;border-radius:12px;padding:14px;margin-bottom:10px}
+.hd{font-size:.78rem;color:var(--t2);font-weight:600}
+@media(max-width:600px){.lt{font-size:1.8rem}.cd{padding:20px 16px}.sn{font-size:1.5rem}.si{padding:12px 6px}.pca button,.oa button{padding:9px 14px;font-size:.78rem}}
 </style>
 </head>
 <body>
@@ -211,6 +223,7 @@ function sA(s){return s.normalize("NFD").replace(/[\u0300-\u036f]/g,"")}
 var SID="10JZz_unbXlJvpryJ5r6QVktdlvIvRBhqOqWaa3SliGU";
 var PRISMA_SID="1mpjvDDy-Px-Oi3fLk7jxFmhAvKSmF1cwNML9laULqHA";
 var GAS_URL="https://script.google.com/macros/s/AKfycbwEYXRnteFr_NF12L0GB3MHI00WK9qWI7lUBypVUkX7roAAnwJP_YsfUji5z8PI8XKO/exec";
+var enviando=false;
 
 function gS(name,cb){
     var u="https://docs.google.com/spreadsheets/d/"+SID+"/gviz/tq?tqx=out:csv&sheet="+encodeURIComponent(name);
@@ -228,7 +241,7 @@ function gS2(name,sheetId,cb){
 function postGAS(d){
     if(!GAS_URL)return Promise.resolve({ok:false});
     return fetch(GAS_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(d)})
-    .then(function(r){return r.json()}).catch(function(e){console.error("GAS:",e);return{ok:false}});
+    .then(function(r){return r.json()}).catch(function(e){console.error("GAS:",e);return{ok:false,error:e.message}});
 }
 function getGAS(){
     if(!GAS_URL)return Promise.resolve({ok:false,pedidos:[],ordenes:[]});
@@ -370,12 +383,11 @@ function rPe(){
         h+='<div class="pcm">Total: $'+tot.toFixed(2)+" · Vendedor: "+hx(p.responsable)+'</div>';
         if(p.ordenId){var o=ordenes.find(function(x){return x.id===p.ordenId});if(o)h+='<div class="pcm">Orden: '+hx(o.nombre)+'</div>'}
         h+='</div><span class="bd '+bm[p.estado]+'">'+lb+'</span></div>';
-        h+='<div class="pca"><button class="ae" onclick="eP(\''+p.id+'\')">Editar</button>';
-        if(p.tipo==="pedido")h+='<button class="aw" onclick="sW(\''+p.id+'\')">WhatsApp</button>';
-        if(p.estado==="nuevo"&&!p.ordenId)h+='<button class="ad" onclick="dP2(\''+p.id+'\')">Eliminar</button>';
-        if(p.estado==="comprado")h+='<button class="as" onclick="cE2(\''+p.id+"','enviado'"+')">Enviado</button>';
-        if(p.estado==="enviado")h+='<button class="as" onclick="cE2(\''+p.id+"','entregado'"+')">Entregado</button>';
-        if(p.estado!=="nuevo"&&p.tipo==="pedido")h+='<button class="aw" onclick="sW(\''+p.id+'\')">WhatsApp</button>';
+        h+='<div class="pca"><button class="ae" onclick="eP(\''+p.id+'\')">✏️ Editar</button>';
+        if(p.tipo==="pedido")h+='<button class="aw" onclick="sW(\''+p.id+'\')">💬 WhatsApp</button>';
+        if(p.estado==="nuevo"&&!p.ordenId)h+='<button class="ad" onclick="dP2(\''+p.id+'\')">🗑️ Eliminar</button>';
+        if(p.estado==="comprado")h+='<button class="as" onclick="cE2(\''+p.id+"','enviado'"+')">📤 Enviado</button>';
+        if(p.estado==="enviado")h+='<button class="as" onclick="cE2(\''+p.id+"','entregado'"+')">✅ Entregado</button>';
         h+='</div></div>';
     });el.innerHTML=h;
 }
@@ -491,7 +503,7 @@ function rIts(){
     h+='<div class="it'+(sel?' itx':'')+'"><div class="itn"><strong>'+hx(it.producto)+'</strong>';
     if(it.tono&&it.tono!=="Sin tono")h+=" — "+hx(it.tono);
     h+='<br><span style="color:var(--t2);font-size:.8rem">×'+it.cantidad+" · $"+it.precio.toFixed(2)+" c/u · $"+sub.toFixed(2)+'</span></div>';
-    h+='<div class="ita"><button class="ie" onclick="eI('+i+')">Editar</button><button class="id" onclick="rI('+i+')">Quitar</button></div></div>'}
+    h+='<div class="ita"><button class="ie" onclick="eI('+i+')">✏️</button><button class="id" onclick="rI('+i+')">🗑️</button></div></div>'}
     h+='<div style="text-align:right;font-weight:700;font-size:.9rem;padding:8px 0;color:var(--pr)">Total: $'+tot.toFixed(2)+'</div>';
     el.innerHTML=h;
 }
@@ -530,7 +542,7 @@ function rO(){
     h+='<div class="oc"><div class="och"><div><div class="oct">'+hx(o.nombre)+'</div><div class="ocs">Sucursal: '+hx(o.sucursal)+" · Vendedor: "+hx(o.responsable||"")+'</div><div class="oci">'+items.length+" pedido(s) · "+o.fechaCreacion+'</div>';if(o.fechaEnvio)h+='<div class="oci">Enviada: '+o.fechaEnvio+'</div>';
     h+='</div><span class="bd '+bg+'">'+lb+'</span></div>';
     if(items.length){h+='<div style="margin-top:8px;font-size:.8rem">';items.forEach(function(p){gI(p).forEach(function(i){h+='<div style="padding:3px 0;border-bottom:1px solid #F1F5F9">'+hx(i.producto);if(i.tono&&i.tono!=="Sin tono")h+=" — "+hx(i.tono);h+=" ×"+i.cantidad+(p.tipo==="pedido"?" — "+hx(p.cliente):" — Stock")+'</div>'})});h+='</div>'}
-    h+='<div class="oa">';h+='<button class="aw" onclick="sWO(\''+o.id+'\')">WhatsApp</button>';if(o.estado==="pendiente")h+='<button class="ae" onclick="eO(\''+o.id+'\')">Editar</button><button class="as" onclick="sFz(\''+o.id+'\')">Enviar</button><button class="ad" onclick="dO(\''+o.id+'\')">Eliminar</button>';h+='</div></div>'});el.innerHTML=h;
+    h+='<div class="oa">';h+='<button class="aw" onclick="sWO(\''+o.id+'\')">💬 WhatsApp</button>';if(o.estado==="pendiente")h+='<button class="ae" onclick="eO(\''+o.id+'\')">✏️ Editar</button><button class="as" onclick="sFz(\''+o.id+'\')">📤 Enviar a Finanzas</button><button class="ad" onclick="dO(\''+o.id+'\')">🗑️ Eliminar</button>';h+='</div></div>'});el.innerHTML=h;
 }
 
 function nO(){eOI=null;document.getElementById("oET").textContent="Nueva Orden";document.getElementById("rO").textContent="Vendedor: "+(vA||"—");document.getElementById("oNm").value="";document.getElementById("oSu").value="";document.getElementById("oNt").value="";document.getElementById("bFz").style.display="none";rOC();document.getElementById("oLV").style.display="none";document.getElementById("oEV").style.display="block"}
@@ -569,19 +581,30 @@ function sO(){
     var m=document.getElementById("oMs");m.textContent="Guardada";m.classList.add("show");setTimeout(function(){m.classList.remove("show")},2000);
 }
 
-function sFz(oid){
-    if(!oid)oid=eOI;if(!oid)return;if(!confirm("¿Enviar a Finanzas?"))return;
-    var o=ordenes.find(function(x){return x.id===oid});if(!o)return;
+async function sFz(oid){
+    if(enviando)return;
+    if(!oid)oid=eOI;if(!oid)return;
+    if(!confirm("¿Enviar a Finanzas?"))return;
+    enviando=true;
+    var o=ordenes.find(function(x){return x.id===oid});if(!o){enviando=false;return}
     o.estado="enviada";o.fechaEnvio=new Date().toISOString().split("T")[0];
     var items=pedidos.filter(function(p){return p.ordenId===oid});
     items.forEach(function(p){if(p.estado==="nuevo"){p.estado="comprado";p.fechaCambio=o.fechaEnvio}});
     historial.unshift({fecha:o.fechaEnvio,tipo:"orden_enviada",refId:oid,cliente:"",whatsapp:"",producto:o.nombre,tono:"",cantidad:items.length,total:0,sucursal:o.sucursal,responsable:vA||""});
     sv("ordenes",ordenes);sv("pedidos",pedidos);sv("hist",historial);
-    var gr=[];items.forEach(function(p){gr.push({OrdenID:oid,OrdenNombre:o.nombre,Sucursal:o.sucursal,FechaEnvio:o.fechaEnvio,Vendedor:vA||"",PedidoID:p.id,Tipo:p.tipo,Cliente:p.cliente||"",WhatsApp:p.whatsapp||"",Items:JSON.stringify(gI(p)),TotalUSD:pTl(p),EstadoPedido:"comprado",FechaEntrega:"",Observaciones:p.observaciones||""})});
-    postGAS({action:"saveOrder",rows:gr});
-    postGAS({action:"saveOrden",row:ordToGAS(o)});
-    items.forEach(function(p){postGAS({action:"savePedido",row:pedToGAS(p)})});
-    alert("Enviada. "+items.length+" pedido(s) a 'Comprado'.");cOE();rO();
+    try{
+        await postGAS({action:"saveOrden",row:ordToGAS(o)});
+        for(var i=0;i<items.length;i++){
+            await postGAS({action:"savePedido",row:pedToGAS(items[i])});
+        }
+        var gr=[];items.forEach(function(p){gr.push({OrdenID:oid,OrdenNombre:o.nombre,Sucursal:o.sucursal,FechaEnvio:o.fechaEnvio,Vendedor:vA||"",PedidoID:p.id,Tipo:p.tipo,Cliente:p.cliente||"",WhatsApp:p.whatsapp||"",Items:JSON.stringify(gI(p)),TotalUSD:pTl(p),EstadoPedido:"comprado",FechaEntrega:"",Observaciones:p.observaciones||""})});
+        await postGAS({action:"saveOrder",rows:gr});
+        alert("Enviada. "+items.length+" pedido(s) a 'Comprado'.");
+    }catch(e){
+        alert("Error al enviar: "+e.message+". Los cambios están guardados localmente.");
+    }
+    enviando=false;
+    cOE();rO();rPe();doSm();
 }
 
 function sWO(oid){
